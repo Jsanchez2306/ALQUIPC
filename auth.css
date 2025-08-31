@@ -1,0 +1,20 @@
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+.card {
+    border-radius: 1rem;
+}
+
+input.form-control {
+    border-radius: 0.5rem;
+}
+
+input.form-control:focus {
+    border-color: #ffc107;
+    box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25);
+}
+
+.btn-sm {
+    border-radius: 0.5rem;
+}

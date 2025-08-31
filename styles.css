@@ -1,0 +1,25 @@
+body {
+  font-family: 'Inter', sans-serif;
+  background: #e9f0f7;
+  color: #333;
+}
+
+.placeholder {
+  color: #777;
+  font-style: italic;
+}
+
+.form-control,
+.form-select {
+  border-radius: 0.5rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #ffc107;
+  box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25);
+}
+
+.btn-primary:hover {
+  background: #133953;
+}
