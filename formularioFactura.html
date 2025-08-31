@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ALQUIPC — Facturación</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body class="bg-light">
+  <header class="py-3 bg-primary text-white shadow-sm d-flex justify-content-between align-items-center px-4">
+    <div class="text-center w-100">
+      <h1 class="h4 fw-bold mb-0">ALQUIPC <span class="text-warning">•</span> Facturación</h1>
+      <small>Alquiler de portátiles por días — Valor base: <strong>$35.000</strong> por equipo/día.</small>
+    </div>
+    <button id="logoutBtn" class="btn btn-outline-light btn-sm">Logout</button>
+  </header>
+  <main class="container my-5">
+    <div class="row g-4">
+      <div class="col-md-6">
+        <div class="card shadow-sm p-4">
+          <h2 class="h5 mb-3">Datos del alquiler</h2>
+          <form id="alquilerForm" novalidate>
+            <div class="mb-3">
+              <label for="nombre" class="form-label">Nombre completo <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="nombre" placeholder="Juan Pérez" required>
+              <div class="invalid-feedback"></div>
+            </div>
+            <div class="mb-3">
+              <label for="telefono" class="form-label">Teléfono <span class="text-danger">*</span></label>
+              <input type="tel" class="form-control" id="telefono" placeholder="3001234567" required>
+              <div class="invalid-feedback"></div>
+            </div>
+            <div class="mb-3">
+              <label for="equipos" class="form-label">Número de equipos <span class="text-danger">*</span></label>
+              <input type="number" class="form-control" id="equipos" min="2" step="1" placeholder="Mínimo 2" required>
+              <div class="invalid-feedback"></div>
+            </div>
+            <div class="mb-3">
+              <label for="diasIniciales" class="form-label">Días iniciales <span class="text-danger">*</span></label>
+              <input type="number" class="form-control" id="diasIniciales" min="1" step="1" placeholder="Ej. 3"
+                required>
+              <div class="invalid-feedback"></div>
+            </div>
+            <div class="mb-3">
+              <label for="diasAdicionales" class="form-label">Días adicionales</label>
+              <input type="number" class="form-control" id="diasAdicionales" min="0" step="1" value="0">
+              <small class="text-muted">Cada día adicional tiene 2% de descuento (máx. 30%).</small>
+            </div>
+            <div class="mb-3">
+              <label for="opcion" class="form-label">Opción de alquiler <span class="text-danger">*</span></label>
+              <select id="opcion" class="form-select" required>
+                <option value="">-- Selecciona una opción --</option>
+                <option value="ciudad">Dentro de la ciudad (0%)</option>
+                <option value="fuera">Fuera de la ciudad (+5%)</option>
+                <option value="establecimiento">Dentro del establecimiento (−5%)</option>
+              </select>
+              <div class="invalid-feedback"></div>
+            </div>
+            <div class="d-flex gap-2">
+              <button type="submit" class="btn btn-primary flex-fill">Calcular factura</button>
+              <button type="reset" class="btn btn-outline-secondary flex-fill" id="btnLimpiar">Limpiar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card shadow-sm p-4">
+          <h2 class="h5 mb-3">Resumen & Valor total</h2>
+          <div id="resultado" class="p-3 bg-light rounded placeholder" style="min-height:180px;">
+            Completa el formulario y calcula para ver el resumen aquí.
+          </div>
+          <div class="d-flex gap-2 mt-3">
+            <button class="btn btn-secondary flex-fill" id="btnCopiar" disabled>Copiar resumen</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer class="bg-primary text-white py-3 text-center shadow-sm">
+    <small>
+      &copy; 2025 ALQUIPC. Todos los derechos reservados •
+      <a href="README.md" class="text-warning" target="_blank">README</a> •
+    </small>
+  </footer>
+
+  <!-- Modal Para Copiar -->
+  <div class="modal fade" id="copiadoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-primary">
+        <div class="modal-body text-center p-4">
+          <h5 class="mb-0">✅ Resumen copiado</h5>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>

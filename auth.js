@@ -11,7 +11,7 @@ function showSuccessModal(message) {
     header.classList.remove("bg-danger");
     header.classList.add("bg-success");
     successModal.show();
-    modalOkBtn.onclick = () => { window.location.href = "index.html"; }
+    modalOkBtn.onclick = () => { window.location.href = "formularioFactura.html"; }
 }
 
 // Validacion del email

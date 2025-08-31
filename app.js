@@ -7,7 +7,7 @@ const logoutBtn = document.getElementById("logoutBtn");
 // Logout usuario
 logoutBtn.addEventListener("click", () => {
   localStorage.removeItem("usuarioActual");
-  window.location.href = "auth.html";
+  window.location.href = "index.html";
 });
 
 // Obtener el correo del usuario
