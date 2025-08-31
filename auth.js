@@ -3,12 +3,10 @@ const registerForm = document.getElementById("registerForm");
 const successModal = new bootstrap.Modal(document.getElementById('successModal'));
 const modalOkBtn = document.getElementById("modalOkBtn");
 
-// Generar ID único
 function generarID() {
     return 'ID' + Math.floor(Math.random() * 1000000);
 }
 
-// Mostrar modal de éxito con comportamiento según tipo: "register" o "login"
 function showSuccessModal(message, tipo = "login") {
     const modalBody = document.querySelector("#successModal .modal-body");
     modalBody.innerHTML = message;
@@ -19,27 +17,24 @@ function showSuccessModal(message, tipo = "login") {
 
     modalOkBtn.onclick = () => {
         successModal.hide();
-        if(tipo === "login") {
+        if (tipo === "login") {
             window.location.href = "formularioFactura.html";
-        } else if(tipo === "register") {
+        } else if (tipo === "register") {
             const loginTab = new bootstrap.Tab(document.querySelector("#login-tab"));
             loginTab.show();
         }
     }
 }
 
-// Validar email
 function validarEmail(email) {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
 }
 
-// Limpiar errores
 function limpiarErrores(campos) {
     campos.forEach(el => el.classList.remove("is-invalid"));
 }
 
-// Validar campos
 function validarCampos(campos) {
     let valido = true;
     campos.forEach(({ el, tipo, min, max, msg }) => {
@@ -50,7 +45,7 @@ function validarCampos(campos) {
             el.classList.add("is-invalid");
             el.nextElementSibling.textContent = msg;
             valido = false;
-        } 
+        }
         else if (tipo === "email") {
             if (!validarEmail(valor)) {
                 el.classList.add("is-invalid");
@@ -70,7 +65,7 @@ function validarCampos(campos) {
             el.classList.add("is-invalid");
             el.nextElementSibling.textContent = `Contraseña debe tener al menos ${min} caracteres.`;
             valido = false;
-        } 
+        }
         else if (tipo === "nombre") {
             if (valor.length < min) {
                 el.classList.add("is-invalid");
@@ -85,12 +80,12 @@ function validarCampos(campos) {
                 el.nextElementSibling.textContent = "Nombre inválido: solo letras y espacios.";
                 valido = false;
             }
-        } 
+        }
         else if (tipo === "telefono" && !/^\d+$/.test(valor)) {
             el.classList.add("is-invalid");
             el.nextElementSibling.textContent = "Teléfono inválido: solo números.";
             valido = false;
-        } 
+        }
         else if (tipo === "telefono" && (valor.length !== max)) {
             el.classList.add("is-invalid");
             el.nextElementSibling.textContent = `Teléfono inválido: debe tener ${max} dígitos.`;
@@ -100,7 +95,6 @@ function validarCampos(campos) {
     return valido;
 }
 
-// Registro
 registerForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
@@ -147,7 +141,6 @@ registerForm.addEventListener("submit", (e) => {
     `, "register");
 });
 
-// Login
 loginForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
