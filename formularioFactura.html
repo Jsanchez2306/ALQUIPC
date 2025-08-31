@@ -18,31 +18,27 @@
     </div>
     <button id="logoutBtn" class="btn btn-outline-light btn-sm">Logout</button>
   </header>
+
   <main class="container my-5">
     <div class="row g-4">
+      <!-- Formulario -->
       <div class="col-md-6">
         <div class="card shadow-sm p-4">
           <h2 class="h5 mb-3">Datos del alquiler</h2>
           <form id="alquilerForm" novalidate>
             <div class="mb-3">
-              <label for="nombre" class="form-label">Nombre completo <span class="text-danger">*</span></label>
-              <input type="text" class="form-control" id="nombre" placeholder="Juan Pérez" required>
-              <div class="invalid-feedback"></div>
-            </div>
-            <div class="mb-3">
-              <label for="telefono" class="form-label">Teléfono <span class="text-danger">*</span></label>
-              <input type="tel" class="form-control" id="telefono" placeholder="3001234567" required>
+              <label for="idCliente" class="form-label">ID de cliente <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="idCliente" placeholder="Ej. ID123456" required>
               <div class="invalid-feedback"></div>
             </div>
             <div class="mb-3">
               <label for="equipos" class="form-label">Número de equipos <span class="text-danger">*</span></label>
-              <input type="number" class="form-control" id="equipos" min="2" step="1" placeholder="Mínimo 2" required>
+              <input type="number" class="form-control" id="equipos" min="2" max="20" step="1" placeholder="Mínimo 2" required>
               <div class="invalid-feedback"></div>
             </div>
             <div class="mb-3">
               <label for="diasIniciales" class="form-label">Días iniciales <span class="text-danger">*</span></label>
-              <input type="number" class="form-control" id="diasIniciales" min="1" step="1" placeholder="Ej. 3"
-                required>
+              <input type="number" class="form-control" id="diasIniciales" min="1" step="1" placeholder="Ej. 3" required>
               <div class="invalid-feedback"></div>
             </div>
             <div class="mb-3">
@@ -67,6 +63,8 @@
           </form>
         </div>
       </div>
+
+      <!-- Resumen -->
       <div class="col-md-6">
         <div class="card shadow-sm p-4">
           <h2 class="h5 mb-3">Resumen & Valor total</h2>
@@ -80,10 +78,11 @@
       </div>
     </div>
   </main>
+
   <footer class="bg-primary text-white py-3 text-center shadow-sm">
     <small>
       &copy; 2025 ALQUIPC. Todos los derechos reservados •
-      <a href="README.md" class="text-warning" target="_blank">README</a> •
+      <a href="README.md" class="text-warning" target="_blank">README</a>
     </small>
   </footer>
 

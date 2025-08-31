@@ -3,33 +3,46 @@ const registerForm = document.getElementById("registerForm");
 const successModal = new bootstrap.Modal(document.getElementById('successModal'));
 const modalOkBtn = document.getElementById("modalOkBtn");
 
-// Mostrar el modal de éxito
-function showSuccessModal(message) {
+// Generar ID único
+function generarID() {
+    return 'ID' + Math.floor(Math.random() * 1000000);
+}
+
+// Mostrar modal de éxito con comportamiento según tipo: "register" o "login"
+function showSuccessModal(message, tipo = "login") {
     const modalBody = document.querySelector("#successModal .modal-body");
-    modalBody.textContent = message;
+    modalBody.innerHTML = message;
     const header = document.querySelector("#successModal .modal-header");
     header.classList.remove("bg-danger");
     header.classList.add("bg-success");
     successModal.show();
-    modalOkBtn.onclick = () => { window.location.href = "formularioFactura.html"; }
+
+    modalOkBtn.onclick = () => {
+        successModal.hide();
+        if(tipo === "login") {
+            window.location.href = "formularioFactura.html";
+        } else if(tipo === "register") {
+            const loginTab = new bootstrap.Tab(document.querySelector("#login-tab"));
+            loginTab.show();
+        }
+    }
 }
 
-// Validacion del email
+// Validar email
 function validarEmail(email) {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
 }
 
-// Limpiar errores del formulario
+// Limpiar errores
 function limpiarErrores(campos) {
     campos.forEach(el => el.classList.remove("is-invalid"));
 }
 
-// Validacion de campos de el formulario
-function validarCampos(form, campos) {
+// Validar campos
+function validarCampos(campos) {
     let valido = true;
-    campos.forEach(({ id, tipo, min, msg }) => {
-        const el = document.getElementById(id);
+    campos.forEach(({ el, tipo, min, max, msg }) => {
         const valor = el.value.trim();
         el.classList.remove("is-invalid");
 
@@ -37,84 +50,134 @@ function validarCampos(form, campos) {
             el.classList.add("is-invalid");
             el.nextElementSibling.textContent = msg;
             valido = false;
-        } else if (tipo === "email" && !validarEmail(valor)) {
-            el.classList.add("is-invalid");
-            el.nextElementSibling.textContent = "Correo inválido.";
-            valido = false;
-        } else if (tipo === "password" && valor.length < min) {
+        } 
+        else if (tipo === "email") {
+            if (!validarEmail(valor)) {
+                el.classList.add("is-invalid");
+                el.nextElementSibling.textContent = "Correo inválido.";
+                valido = false;
+            } else if (valor.length < min) {
+                el.classList.add("is-invalid");
+                el.nextElementSibling.textContent = `Correo demasiado corto (mínimo ${min} caracteres).`;
+                valido = false;
+            } else if (valor.length > max) {
+                el.classList.add("is-invalid");
+                el.nextElementSibling.textContent = `Correo demasiado largo (máx. ${max} caracteres).`;
+                valido = false;
+            }
+        }
+        else if (tipo === "password" && valor.length < min) {
             el.classList.add("is-invalid");
             el.nextElementSibling.textContent = `Contraseña debe tener al menos ${min} caracteres.`;
+            valido = false;
+        } 
+        else if (tipo === "nombre") {
+            if (valor.length < min) {
+                el.classList.add("is-invalid");
+                el.nextElementSibling.textContent = `Nombre demasiado corto (mínimo ${min} caracteres).`;
+                valido = false;
+            } else if (valor.length > max) {
+                el.classList.add("is-invalid");
+                el.nextElementSibling.textContent = `Nombre demasiado largo (máx. ${max} caracteres).`;
+                valido = false;
+            } else if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(valor)) {
+                el.classList.add("is-invalid");
+                el.nextElementSibling.textContent = "Nombre inválido: solo letras y espacios.";
+                valido = false;
+            }
+        } 
+        else if (tipo === "telefono" && !/^\d+$/.test(valor)) {
+            el.classList.add("is-invalid");
+            el.nextElementSibling.textContent = "Teléfono inválido: solo números.";
+            valido = false;
+        } 
+        else if (tipo === "telefono" && (valor.length !== max)) {
+            el.classList.add("is-invalid");
+            el.nextElementSibling.textContent = `Teléfono inválido: debe tener ${max} dígitos.`;
             valido = false;
         }
     });
     return valido;
 }
 
-// Registrar usuario
+// Registro
 registerForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    // Limpiar errores previos
-    limpiarErrores([document.getElementById("regCorreo"), document.getElementById("regPass")]);
+    const regNombre = document.getElementById("regNombre");
+    const regTelefono = document.getElementById("regTelefono");
+    const regCorreo = document.getElementById("regCorreo");
+    const regPass = document.getElementById("regPass");
+
+    limpiarErrores([regNombre, regTelefono, regCorreo, regPass]);
 
     const campos = [
-        { id: "regCorreo", tipo: "email", msg: "Ingresa tu correo." },
-        { id: "regPass", tipo: "password", min: 6, msg: "Ingresa tu contraseña." }
+        { el: regNombre, tipo: "nombre", min: 3, max: 30, msg: "Ingresa tu nombre." },
+        { el: regTelefono, tipo: "telefono", min: 10, max: 10, msg: "Ingresa tu teléfono." },
+        { el: regCorreo, tipo: "email", min: 6, max: 30, msg: "Ingresa tu correo." },
+        { el: regPass, tipo: "password", min: 6, msg: "Ingresa tu contraseña." }
     ];
-    if (!validarCampos(registerForm, campos)) return;
 
-    const correo = document.getElementById("regCorreo").value.trim();
-    const pass = document.getElementById("regPass").value.trim();
+    if (!validarCampos(campos)) return;
 
-    let users = JSON.parse(localStorage.getItem("usuarios") || "{}");
-    if (users[correo]) {
-        const el = document.getElementById("regCorreo");
-        el.classList.add("is-invalid");
-        el.nextElementSibling.textContent = "Este correo ya está registrado.";
+    let usuarios = JSON.parse(localStorage.getItem("usuarios") || "{}");
+
+    if (Object.values(usuarios).some(u => u.correo === regCorreo.value.trim())) {
+        regCorreo.classList.add("is-invalid");
+        regCorreo.nextElementSibling.textContent = "Este correo ya está registrado.";
         return;
     }
 
-    // Guardar usuario en localStorage
-    users[correo] = pass;
-    localStorage.setItem("usuarios", JSON.stringify(users));
-    localStorage.setItem("usuarioActual", JSON.stringify({ correo }));
+    const id = generarID();
+    usuarios[id] = {
+        id,
+        nombre: regNombre.value.trim(),
+        telefono: regTelefono.value.trim(),
+        correo: regCorreo.value.trim(),
+        pass: regPass.value.trim()
+    };
 
-    showSuccessModal("¡Registro exitoso! Serás redirigido a la página principal.");
+    localStorage.setItem("usuarios", JSON.stringify(usuarios));
+    localStorage.setItem("usuarioActual", JSON.stringify(usuarios[id]));
+
+    showSuccessModal(`
+        <p>¡Registro exitoso!</p>
+        <p><strong>Tu ID:</strong> ${id}</p>
+        <p>Ahora puedes iniciar sesión usando tu correo y contraseña.</p>
+    `, "register");
 });
 
-// Loguear usuario
+// Login
 loginForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    // Limpiar errores previos
-    limpiarErrores([document.getElementById("loginCorreo"), document.getElementById("loginPass")]);
+    const loginCorreo = document.getElementById("loginCorreo");
+    const loginPass = document.getElementById("loginPass");
+
+    limpiarErrores([loginCorreo, loginPass]);
 
     const campos = [
-        { id: "loginCorreo", tipo: "email", msg: "Ingresa tu correo." },
-        { id: "loginPass", tipo: "password", min: 6, msg: "Ingresa tu contraseña." }
+        { el: loginCorreo, tipo: "email", min: 6, max: 30, msg: "Ingresa tu correo." },
+        { el: loginPass, tipo: "password", min: 6, msg: "Ingresa tu contraseña." }
     ];
-    if (!validarCampos(loginForm, campos)) return;
 
-    const correo = document.getElementById("loginCorreo").value.trim();
-    const pass = document.getElementById("loginPass").value.trim();
+    if (!validarCampos(campos)) return;
 
-    let users = JSON.parse(localStorage.getItem("usuarios") || "{}");
+    const usuarios = JSON.parse(localStorage.getItem("usuarios") || "{}");
+    const usuario = Object.values(usuarios).find(u => u.correo === loginCorreo.value.trim());
 
-    if (!users[correo]) {
-        const el = document.getElementById("loginCorreo");
-        el.classList.add("is-invalid");
-        el.nextElementSibling.textContent = "Este correo no existe.";
+    if (!usuario) {
+        loginCorreo.classList.add("is-invalid");
+        loginCorreo.nextElementSibling.textContent = "Correo no registrado.";
         return;
     }
 
-    if (users[correo] !== pass) {
-        const el = document.getElementById("loginPass");
-        el.classList.add("is-invalid");
-        el.nextElementSibling.textContent = "Contraseña incorrecta.";
+    if (usuario.pass !== loginPass.value.trim()) {
+        loginPass.classList.add("is-invalid");
+        loginPass.nextElementSibling.textContent = "Contraseña incorrecta.";
         return;
     }
 
-    // Login correcto
-    localStorage.setItem("usuarioActual", JSON.stringify({ correo }));
-    showSuccessModal("¡Login exitoso! Serás redirigido a la página principal.");
+    localStorage.setItem("usuarioActual", JSON.stringify(usuario));
+    showSuccessModal("¡Login exitoso! Serás redirigido a la página de facturación.", "login");
 });
